@@ -39,7 +39,7 @@ endif ( )
         
 add_library ( ${PROJECT_NAME} STATIC ${${PROJECT_NAME}_SRC} ${${PROJECT_NAME}_HEADERS} )
 target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE 
-        ${PROJECT_NAME}_SOURCE_DIR/lib )
+        ${${PROJECT_NAME}_SOURCE_DIR}/lib )
         
 if ( ${CMAKE_C_COMPILER_ID}x MATCHES "MSVCx" )
     target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE 
