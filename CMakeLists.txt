@@ -19,18 +19,24 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/../../resources/cmake/ojdkbuild_common.cmake
 project ( ojdkbuild_giflib C CXX )
 set ( ${PROJECT_NAME}_OJDKBUILD_VERSION 4.1.6-1 )
 
-# static library
-add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/resources/giflib_416_cmake ${CMAKE_CURRENT_BINARY_DIR}/lookaside_giflib )
+configure_file ( ${OJDKBUILD_DIR}/resources/buildres/deplib.rc
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.rc )
 
-# shared_library
-add_library ( ${PROJECT_NAME} SHARED ${CMAKE_CURRENT_LIST_DIR}/resources/${PROJECT_NAME}.def )
+# static library
+ojdkbuild_add_external ( ${OJDKBUILD_DIR}/external/giflib )
+
+# shared library
+add_library ( ${PROJECT_NAME} SHARED
+        ${CMAKE_CURRENT_LIST_DIR}/resources/${PROJECT_NAME}.def
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.rc )
 set_target_properties ( ${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE C )
-target_link_libraries ( ${PROJECT_NAME} lookaside_giflib )
+target_link_libraries ( ${PROJECT_NAME} gif )
+set_property ( TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS "/manifest:no" )
 
 # pkg-config
-set ( ${PROJECT_NAME}_MODULE giflib )
+set ( ${PROJECT_NAME}_MODULE ojdkbuild_giflib )
 set ( ${PROJECT_NAME}_BUNDLE_LIB_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}${PROJECT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} )
-set ( ${PROJECT_NAME}_PC_CFLAGS "-I${CMAKE_CURRENT_LIST_DIR}/../../lookaside/giflib/lib" )
+set ( ${PROJECT_NAME}_PC_CFLAGS "-I${gif_LOOKASIDE_DIR}/lib" )
 set ( ${PROJECT_NAME}_PC_LIBS "-L${CMAKE_LIBRARY_OUTPUT_DIRECTORY} -l${PROJECT_NAME}" )
 configure_file ( ${CMAKE_CURRENT_LIST_DIR}/../../resources/cmake/pkg-config.in 
-        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/pkgconfig/giflib.pc )
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/pkgconfig/ojdkbuild_giflib.pc )
